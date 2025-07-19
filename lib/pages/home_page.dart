@@ -4,6 +4,7 @@ import 'package:grocery/model/cart_model.dart';
 import 'package:provider/provider.dart';
 
 import '../components/grocery_item_tile.dart';
+import 'cart_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -11,6 +12,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context){
+        return CartPage();
+      })),
+      child: Icon(Icons.shopping_cart)),
       body: SafeArea(child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -50,17 +55,26 @@ class HomePage extends StatelessWidget {
               child: Consumer<CartModel>(builder:
               (context, value, child) {
                 return GridView.builder(
-                    itemCount: value.getCartItems.length,
+                    itemCount: value.shopItems.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         // childAspectRatio: 1 / 1.2,
                     ),
                     itemBuilder: (context, index){
                       return GroceryItemTile(itemName:
-                        value.getCartItems[index][0],
-                        itemPrice: value.getCartItems[index][1].toString(),
-                        imagePath: value.getCartItems[index][2],
-                        color: value.getCartItems[index][3],);
+                        value.shopItems[index][0],
+                        itemPrice: value.shopItems[index][1].toString(),
+                        imagePath: value.shopItems[index][2],
+                        color: value.shopItems[index][3],
+                      onPressed: () {
+                          // value.addToCart(value.shopItems[index]);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("${value.shopItems[index][0]} added to cart"),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
+                        });
 
                     });
               })
