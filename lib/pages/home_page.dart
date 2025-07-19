@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 48),
           
           const Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: Text("Good morning,"),
           ),
           const SizedBox(height: 4),
@@ -52,32 +52,35 @@ class HomePage extends StatelessWidget {
           ),
 
           Expanded(
-              child: Consumer<CartModel>(builder:
-              (context, value, child) {
+            child: Consumer<CartModel>(
+              builder: (context, cart, child) {
                 return GridView.builder(
-                    itemCount: value.shopItems.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        // childAspectRatio: 1 / 1.2,
-                    ),
-                    itemBuilder: (context, index){
-                      return GroceryItemTile(itemName:
-                        value.shopItems[index][0],
-                        itemPrice: value.shopItems[index][1].toString(),
-                        imagePath: value.shopItems[index][2],
-                        color: value.shopItems[index][3],
+                  padding: const EdgeInsets.all(12),
+                  itemCount: cart.shopItems.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1/1.4,
+                  ),
+                  itemBuilder: (context, index) {
+                    return GroceryItemTile(
+                      itemName: cart.shopItems[index][0],
+                      itemPrice: cart.shopItems[index][1].toString(),
+                      imagePath: cart.shopItems[index][2],
+                      color: cart.shopItems[index][3],
                       onPressed: () {
-                          // value.addToCart(value.shopItems[index]);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("${value.shopItems[index][0]} added to cart"),
-                              duration: const Duration(seconds: 1),
-                            ),
-                          );
-                        });
-
-                    });
-              })
+                        cart.addToCart(index);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("${cart.shopItems[index][0]} added to cart"),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           )
         ],
       )),
